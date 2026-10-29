@@ -36,6 +36,10 @@ pub enum Authentication {
     /// again using the 4-byte random salt.
     Md5Password(AuthenticationMd5Password),
 
+    Gss,
+    #[allow(unused)]
+    GssContinue(AuthenticationGssContinue),
+
     /// The frontend must now initiate a SASL negotiation,
     /// using one of the SASL mechanisms listed in the message.
     ///
@@ -75,6 +79,8 @@ impl BackendMessage for Authentication {
 
                 Authentication::Md5Password(AuthenticationMd5Password { salt })
             }
+            7 => Authentication::Gss,
+            8 => Authentication::GssContinue(AuthenticationGssContinue(buf)),
 
             10 => Authentication::Sasl(AuthenticationSasl(buf)),
             11 => Authentication::SaslContinue(AuthenticationSaslContinue::decode(buf)?),
@@ -101,6 +107,15 @@ impl AuthenticationSasl {
     #[inline]
     pub fn mechanisms(&self) -> SaslMechanisms<'_> {
         SaslMechanisms(&self.0)
+    }
+}
+
+#[derive(Debug)]
+pub struct AuthenticationGssContinue(Bytes);
+impl AuthenticationGssContinue {
+    #[cfg_attr(not(feature = "cross-krb"), expect(unused))]
+    pub fn token(&self) -> &[u8] {
+        &self.0
     }
 }
 

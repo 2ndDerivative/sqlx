@@ -24,6 +24,8 @@ pub struct PgConnectOptions {
     pub(crate) password: Option<String>,
     pub(crate) database: Option<String>,
     pub(crate) ssl_options: SslOptions,
+    #[cfg(feature = "cross-krb")]
+    pub(crate) gssapi_options: GssApiOptions,
     pub(crate) statement_cache_capacity: usize,
     pub(crate) application_name: Option<String>,
     pub(crate) log_settings: LogSettings,
@@ -44,6 +46,13 @@ pub(crate) struct SslOptions {
     pub(crate) ssl_client_cert: Option<CertificateInput>,
     pub(crate) ssl_client_key: Option<CertificateInput>,
     pub(crate) cached_connector: Arc<OnceLock<TlsConnector>>,
+}
+
+#[cfg(feature = "cross-krb")]
+#[derive(Debug, Default, Clone)]
+pub(crate) struct GssApiOptions {
+    pub(crate) gssapi_client_principal: Option<String>,
+    pub(crate) gssapi_target_principal: Option<String>,
 }
 
 impl PgConnectOptions {
@@ -103,6 +112,8 @@ impl PgConnectOptions {
                     .unwrap_or_default(),
                 cached_connector: Arc::new(OnceLock::new()),
             },
+            #[cfg(feature = "cross-krb")]
+            gssapi_options: GssApiOptions::default(),
             statement_cache_capacity: 100,
             application_name: var("PGAPPNAME").ok(),
             extra_float_digits: Some("2".into()),

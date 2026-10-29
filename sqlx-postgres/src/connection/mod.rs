@@ -27,6 +27,8 @@ pub use self::stream::PgStream;
 mod describe;
 mod establish;
 mod executor;
+#[cfg(feature = "cross-krb")]
+mod gssapi;
 mod resolve;
 mod sasl;
 mod stream;
