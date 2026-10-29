@@ -117,7 +117,7 @@ impl AuthenticationSasl {
 #[derive(Debug)]
 pub struct AuthenticationGssContinue(Bytes);
 impl AuthenticationGssContinue {
-    #[cfg_attr(not(feature = "cross-krb"), expect(unused))]
+    #[cfg_attr(not(feature = "gssapi-auth-cross-krb5"), expect(unused))]
     pub fn token(&self) -> &[u8] {
         &self.0
     }

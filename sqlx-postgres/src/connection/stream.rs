@@ -57,7 +57,7 @@ impl PgStream {
         })
     }
 
-    #[cfg_attr(not(feature = "cross-krb"), expect(unused))]
+    #[cfg_attr(not(feature = "gssapi-auth-cross-krb5"), expect(unused))]
     pub(crate) fn channel_binding_token(&self) -> Option<Vec<u8>> {
         self.inner.inner().channel_binding_token()
     }

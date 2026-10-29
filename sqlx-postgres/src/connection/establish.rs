@@ -1,7 +1,7 @@
 use crate::HashMap;
 
 use crate::common::StatementCache;
-#[cfg(feature = "cross-krb")]
+#[cfg(feature = "gssapi-auth-cross-krb5")]
 use crate::connection::gssapi;
 use crate::connection::{sasl, stream::PgStream};
 use crate::error::Error;
@@ -103,14 +103,14 @@ impl PgConnection {
                         sasl::authenticate(&mut stream, options, body).await?;
                     }
 
-                    #[cfg(feature = "cross-krb")]
+                    #[cfg(feature = "gssapi-auth-cross-krb5")]
                     Authentication::Gss => {
                         gssapi::authenticate(&mut stream, options).await?;
                     }
-                    #[cfg(not(feature = "cross-krb"))]
+                    #[cfg(not(feature = "gssapi-auth-cross-krb5"))]
                     Authentication::Gss => {
                         return Err(err_protocol!(
-                            "GSSAPI authentication is disabled. Enable with feature cross-krb"
+                            "GSSAPI authentication is disabled. Enable with feature gssapi-auth-cross-krb5"
                         ));
                     }
 

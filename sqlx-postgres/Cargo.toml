@@ -27,7 +27,7 @@ time = ["dep:time", "sqlx-core/time"]
 uuid = ["dep:uuid", "sqlx-core/uuid"]
 
 # Authentication features
-cross-krb = ["dep:cross-krb5"]
+gssapi-auth-cross-krb5 = ["dep:cross-krb5"]
 
 [dependencies]
 # Futures crates
