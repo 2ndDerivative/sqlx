@@ -25,7 +25,7 @@ pub async fn authenticate(stream: &mut PgStream, options: &PgConnectOptions) -> 
         &target_principal,
         channel_binding_token.as_deref(),
     )
-    .map_err(|e| Error::GSSAPI(e.into_boxed_dyn_error()))?;
+    .map_err(|e| Error::GSSAPI(e.into()))?;
     stream
         .send(GssResponse {
             token: &first_token,
@@ -45,7 +45,7 @@ pub async fn authenticate(stream: &mut PgStream, options: &PgConnectOptions) -> 
         };
         pending_ctx = match pending_ctx
             .step(response.token())
-            .map_err(|e| Error::GSSAPI(e.into_boxed_dyn_error()))?
+            .map_err(|e| Error::GSSAPI(e.into()))?
         {
             Step::Continue((new_ctx, new_token)) => {
                 let token = new_token.as_ref();
