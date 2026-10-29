@@ -37,6 +37,9 @@ impl<S: Socket> Socket for NativeTlsSocket<S> {
             ready => Poll::Ready(ready),
         }
     }
+    fn channel_binding_token(&self) -> Option<Vec<u8>> {
+        self.stream.tls_server_end_point().ok().flatten()
+    }
 }
 
 #[derive(Debug, Clone)]

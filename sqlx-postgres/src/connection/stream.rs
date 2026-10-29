@@ -57,6 +57,11 @@ impl PgStream {
         })
     }
 
+    #[cfg_attr(not(feature = "cross-krb"), expect(unused))]
+    pub(crate) fn channel_binding_token(&self) -> Option<Vec<u8>> {
+        self.inner.inner().channel_binding_token()
+    }
+
     #[inline(always)]
     pub(crate) fn write_msg(&mut self, message: impl FrontendMessage) -> Result<(), Error> {
         self.write(EncodeMessage(message))

@@ -149,6 +149,10 @@ impl<S: Socket> BufferedSocket<S> {
         self.socket
     }
 
+    pub fn inner(&self) -> &S {
+        &self.socket
+    }
+
     pub fn boxed(self) -> BufferedSocket<Box<dyn Socket>> {
         BufferedSocket {
             socket: Box::new(self.socket),

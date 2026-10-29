@@ -29,6 +29,9 @@ impl Socket for TcpStream {
     fn poll_shutdown(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         Pin::new(self).poll_shutdown(cx)
     }
+    fn channel_binding_token(&self) -> Option<Vec<u8>> {
+        None
+    }
 }
 
 #[cfg(unix)]

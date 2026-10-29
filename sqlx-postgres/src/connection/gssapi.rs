@@ -18,12 +18,12 @@ pub async fn authenticate(stream: &mut PgStream, options: &PgConnectOptions) -> 
         .map(Cow::Borrowed)
         .unwrap_or_else(|| Cow::Owned(format!("postgres/{}", options.host)));
 
-    let channel_binding_token = None;
+    let channel_binding_token = stream.channel_binding_token();
     let (mut pending_ctx, first_token) = ClientCtx::new(
         InitiateFlags::default(),
         client_principal,
         &target_principal,
-        channel_binding_token,
+        channel_binding_token.as_deref(),
     )
     .map_err(|e| Error::GSSAPI(e.into_boxed_dyn_error()))?;
     stream

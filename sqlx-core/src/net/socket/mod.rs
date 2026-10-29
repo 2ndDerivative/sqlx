@@ -55,6 +55,10 @@ pub trait Socket: Send + Sync + Unpin + 'static {
     {
         Shutdown { socket: self }
     }
+
+    fn channel_binding_token(&self) -> Option<Vec<u8>> {
+        None
+    }
 }
 
 pub struct Read<'a, S: ?Sized, B> {
@@ -178,6 +182,9 @@ impl<S: Socket + ?Sized> Socket for Box<S> {
 
     fn poll_shutdown(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         (**self).poll_shutdown(cx)
+    }
+    fn channel_binding_token(&self) -> Option<Vec<u8>> {
+        (**self).channel_binding_token()
     }
 }
 
