@@ -36,7 +36,11 @@ pub enum Authentication {
     /// again using the 4-byte random salt.
     Md5Password(AuthenticationMd5Password),
 
+    /// The frontend must initialize a GSSAPI context
     Gss,
+
+    /// The frontend must advance the GSSAPI context with the given token
+    /// and reply with the next token
     #[allow(unused)]
     GssContinue(AuthenticationGssContinue),
 
