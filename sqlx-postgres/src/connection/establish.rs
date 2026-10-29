@@ -108,9 +108,9 @@ impl PgConnection {
                         gssapi::authenticate(&mut stream, options, false).await?;
                     }
                     #[cfg(not(feature = "gssapi-auth-cross-krb5"))]
-                    Authentication::Gss => {
+                    Authentication::Gss | Authentication::Sspi => {
                         return Err(err_protocol!(
-                            "GSSAPI authentication is disabled. Enable with feature gssapi-auth-cross-krb5"
+                            "GSSAPI/SSPI authentication is disabled. Enable with feature gssapi-auth-cross-krb5"
                         ));
                     }
 
