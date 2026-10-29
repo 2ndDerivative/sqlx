@@ -85,10 +85,6 @@ impl<S: Socket> Socket for RustlsSocket<S> {
 
         Poll::Ready(Ok(()))
     }
-    fn channel_binding_token(&self) -> Option<Vec<u8>> {
-        // TODO implement this
-        None
-    }
 }
 
 #[derive(Debug, Clone)]

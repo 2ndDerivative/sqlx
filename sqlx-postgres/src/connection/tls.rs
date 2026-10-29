@@ -151,10 +151,6 @@ mod tests {
         fn poll_shutdown(&mut self, _cx: &mut Context<'_>) -> Poll<io::Result<()>> {
             Poll::Ready(Ok(()))
         }
-
-        fn channel_binding_token(&self) -> Option<Vec<u8>> {
-            None
-        }
     }
 
     /// Polls a future that is guaranteed to complete immediately on its first poll.

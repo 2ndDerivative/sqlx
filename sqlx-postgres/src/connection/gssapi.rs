@@ -22,7 +22,6 @@ pub async fn authenticate(
         .map(Cow::Borrowed)
         .unwrap_or_else(|| Cow::Owned(format!("postgres/{}", options.host)));
 
-    let channel_binding_token = stream.channel_binding_token();
     let init_flags = if sspi {
         InitiateFlags::NEGOTIATE_TOKEN
     } else {
@@ -32,7 +31,7 @@ pub async fn authenticate(
         init_flags,
         client_principal,
         &target_principal,
-        channel_binding_token.as_deref(),
+        None
     )
     .map_err(|e| Error::GSSAPI(e.into()))?;
     stream
