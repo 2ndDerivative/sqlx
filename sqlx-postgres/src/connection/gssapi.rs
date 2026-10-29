@@ -27,13 +27,9 @@ pub async fn authenticate(
     } else {
         InitiateFlags::empty()
     };
-    let (mut pending_ctx, first_token) = ClientCtx::new(
-        init_flags,
-        client_principal,
-        &target_principal,
-        None
-    )
-    .map_err(|e| Error::GSSAPI(e.into()))?;
+    let (mut pending_ctx, first_token) =
+        ClientCtx::new(init_flags, client_principal, &target_principal, None)
+            .map_err(|e| Error::GSSAPI(e.into()))?;
     stream
         .send(GssResponse {
             token: &first_token,
