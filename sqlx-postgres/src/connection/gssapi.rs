@@ -8,7 +8,11 @@ use crate::{
 use cross_krb5::{ClientCtx, InitiateFlags, Step};
 use sqlx_core::Error;
 
-pub async fn authenticate(stream: &mut PgStream, options: &PgConnectOptions) -> Result<(), Error> {
+pub async fn authenticate(
+    stream: &mut PgStream,
+    options: &PgConnectOptions,
+    sspi: bool,
+) -> Result<(), Error> {
     let client_principal: Option<&str> = options.gssapi_options.gssapi_client_principal.as_deref();
 
     let target_principal: Cow<str> = options
@@ -19,8 +23,13 @@ pub async fn authenticate(stream: &mut PgStream, options: &PgConnectOptions) -> 
         .unwrap_or_else(|| Cow::Owned(format!("postgres/{}", options.host)));
 
     let channel_binding_token = stream.channel_binding_token();
+    let init_flags = if sspi {
+        InitiateFlags::NEGOTIATE_TOKEN
+    } else {
+        InitiateFlags::empty()
+    };
     let (mut pending_ctx, first_token) = ClientCtx::new(
-        InitiateFlags::default(),
+        init_flags,
         client_principal,
         &target_principal,
         channel_binding_token.as_deref(),

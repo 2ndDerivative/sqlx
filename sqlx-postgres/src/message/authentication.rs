@@ -39,6 +39,9 @@ pub enum Authentication {
     /// The frontend must initialize a GSSAPI context
     Gss,
 
+    /// The frontend must initialize an SSPI context
+    Sspi,
+
     /// The frontend must advance the GSSAPI context with the given token
     /// and reply with the next token
     #[allow(unused)]
@@ -85,6 +88,7 @@ impl BackendMessage for Authentication {
             }
             7 => Authentication::Gss,
             8 => Authentication::GssContinue(AuthenticationGssContinue(buf)),
+            9 => Authentication::Sspi,
 
             10 => Authentication::Sasl(AuthenticationSasl(buf)),
             11 => Authentication::SaslContinue(AuthenticationSaslContinue::decode(buf)?),
