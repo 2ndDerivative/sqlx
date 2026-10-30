@@ -1,18 +1,28 @@
-use std::borrow::Cow;
-
-use crate::{
-    connection::PgStream,
-    message::{Authentication, GssResponse},
-    PgConnectOptions,
-};
-use cross_krb5::{ClientCtx, InitiateFlags, Step};
+use crate::{connection::PgStream, PgConnectOptions};
 use sqlx_core::Error;
 
-pub async fn authenticate(
+#[cfg(not(feature = "gssapi-auth-cross-krb5"))]
+pub(crate) async fn authenticate(
+    _stream: &mut PgStream,
+    _options: &PgConnectOptions,
+    _sspi: bool,
+) -> Result<(), Error> {
+    Err(Error::GSSAPI(
+        "GSSAPI authentication requested by server \
+            but SQLx was built without gssapi-auth support enabled"
+            .into(),
+    ))
+}
+
+#[cfg(feature = "gssapi-auth-cross-krb5")]
+pub(crate) async fn authenticate(
     stream: &mut PgStream,
     options: &PgConnectOptions,
     sspi: bool,
 ) -> Result<(), Error> {
+    use crate::message::{Authentication, GssResponse};
+    use cross_krb5::{ClientCtx, InitiateFlags, Step};
+    use std::borrow::Cow;
     let client_principal: Option<&str> = options.gssapi_options.gssapi_client_principal.as_deref();
 
     let target_principal: Cow<str> = options
